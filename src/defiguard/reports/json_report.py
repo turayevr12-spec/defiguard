@@ -19,7 +19,10 @@ def render_json(result: ScanResult, indent: int = 2) -> str:
         "findings": [f.to_dict() for f in result.sorted_findings()],
         "disclaimer": (
             "Findings are heuristic review hints, not confirmed vulnerabilities. "
-            "Each must be verified by a human and, where possible, a test."
+            "Each must be verified by a human and, where possible, a test. "
+            "Use only on code you own or are authorized to analyze, for learning / "
+            "testing purposes; follow any bug-bounty program's scope and disclosure "
+            "rules. No warranty -- all responsibility rests with the person running it."
         ),
     }
     return json.dumps(payload, indent=indent)

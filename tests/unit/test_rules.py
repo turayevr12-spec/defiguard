@@ -10,6 +10,7 @@ import pytest
 from defiguard.rules.access_control import ThirdPartyFundSourceRule
 from defiguard.rules.delegatecall import DelegatecallStorageRule
 from defiguard.rules.external_calls import ExternalCallRule
+from defiguard.rules.unbounded_loop import UnboundedLoopRule
 
 FIXTURES = Path(__file__).resolve().parents[1] / "fixtures"
 
@@ -78,6 +79,36 @@ def test_external_call_no_reentrancy_flag_when_cei_and_guarded():
     # the MEDIUM reentrancy flag must be absent (effect precedes interaction,
     # and the function is nonReentrant). Low-level hygiene LOW may still appear.
     assert not any("State write after an external call" in f.title for f in findings)
+
+
+# ---- DG-DOS-001: unbounded loop over a growable array ----
+
+def test_unbounded_loop_fires_on_growable_array():
+    src = _read("vulnerable", "UnboundedLoop.sol")
+    findings = UnboundedLoopRule().check("UnboundedLoop.sol", src)
+    assert len(findings) == 1
+    assert findings[0].rule_id == "DG-DOS-001"
+    assert findings[0].meta["array"] == "deposits"
+
+
+def test_unbounded_loop_silent_on_paginated():
+    src = _read("fixed", "BoundedLoop.sol")
+    findings = UnboundedLoopRule().check("BoundedLoop.sol", src)
+    assert findings == []  # loop runs to `end`, not to deposits[user].length
+
+
+def test_unbounded_loop_silent_without_push():
+    # a loop over `.length` of an array that is never pushed to is not flagged
+    src = (
+        "pragma solidity ^0.8.20;\n"
+        "contract C {\n"
+        "    address[] fixedSet;\n"
+        "    function f() external view returns (uint256 n) {\n"
+        "        for (uint256 i; i < fixedSet.length; i++) { n++; }\n"
+        "    }\n"
+        "}\n"
+    )
+    assert UnboundedLoopRule().check("C.sol", src) == []
 
 
 # ---- comment/string stripping: no flag inside comments ----

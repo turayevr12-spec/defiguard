@@ -14,6 +14,32 @@ scenarios (a vulnerable contract, a fixed one, and a test that tells them apart)
 
 ---
 
+## ⚠️ Authorized & responsible use (read this first)
+
+DeFiGuard is for **learning and for testing your own projects.** By using it you
+accept full responsibility for how you use it and for anything you do with its
+output.
+
+- **Authorized targets only.** Run DeFiGuard only on code you **own** or are
+  **explicitly authorized** to analyze (e.g. your own contracts, or a bug-bounty
+  program whose scope and rules permit it). Analyzing or attacking systems
+  without permission may be illegal — that is on you, not this tool.
+- **Educational / testing purpose.** This project exists to study smart-contract
+  security and to test the tool itself. A flag is a *hypothesis to verify*, never
+  a licence to exploit anything.
+- **Follow program rules.** If a finding relates to a bug-bounty program, obey
+  that program's scope, "test only your own accounts" rule, and **disclosure**
+  policy. Many programs forbid *any* public disclosure (including pushing a PoC to
+  a public repo) before resolution. Report privately, through the program.
+- **No warranty, no liability.** DeFiGuard is provided "as is" under the
+  [MIT License](LICENSE), **without any warranty.** The authors and contributors
+  are **not liable** for any use, misuse, damage, or legal consequence. **All
+  responsibility rests entirely with the person running it.**
+
+See [`SECURITY.md`](SECURITY.md) and [`docs/threat-model.md`](docs/threat-model.md).
+
+---
+
 ## Why another tool?
 
 Generic analyzers are great at breadth but noisy on DeFi-specific intent. A
@@ -33,6 +59,7 @@ auditor actually needs:
 | `DG-AC-001` | HIGH | A third-party `address` parameter used as a **token source** (`transferFrom(user, …)`) with **no authorization check** tying it to `msg.sender`. The "forced staking / forced deposit" class: anyone can move the tokens of any address that left a standing allowance. |
 | `DG-DC-001` | REVIEW | A `delegatecall` site — needs a manual **storage-layout** diff between caller and target (one mismatched slot = silent state corruption). |
 | `DG-EXT-001` | MEDIUM / LOW | A **state write after an external call** without `nonReentrant` (checks-effects-interactions / reentrancy candidate), plus low-level `.call`/`.send`/`.transfer` return-value and gas hygiene. |
+| `DG-DOS-001` | MEDIUM | A **loop bounded by a growable array's length** (`for (…; i < arr.length; …)` where `arr` is also `.push`-ed). Unbounded growth eventually makes the call exceed the block gas limit and revert forever — a denial-of-service / permanent fund lock-up. |
 
 Run `defiguard rules` to list them.
 
@@ -83,6 +110,23 @@ $ defiguard scan tests/fixtures
 The fixed counterparts (`tests/fixtures/fixed/`) are **not** flagged for their
 respective issue — that positive/negative pairing is how DeFiGuard keeps false
 positives honest.
+
+## False-positive benchmark
+
+Measured on the bundled fixtures (`defiguard scan tests/fixtures`), 8 files — 4
+vulnerable, 4 fixed, one pair per rule:
+
+| Metric | Result |
+|--------|--------|
+| Vulnerable classes correctly flagged (true positives) | **4 / 4** — DG-AC-001, DG-EXT-001, DG-DC-001, DG-DOS-001 |
+| Fixed files flagged for their vulnerability class (false positives) | **0 / 4** |
+| Other notes on fixed files | 1 × LOW on `SafeVault.sol` — a low-level-call **hygiene** note (return value / gas), not a reentrancy claim. Documented and intentional. |
+
+So on this set the detectors have **0 class-level false positives**; the single
+LOW note is advisory hygiene, not a "this is broken" flag. These fixtures are the
+regression gate — every new rule must keep this record (a vulnerable fixture it
+flags, a fixed fixture it does not). The set is small and synthetic; a benchmark
+on real-world corpora is planned (see [`docs/limitations.md`](docs/limitations.md)).
 
 ## Foundry scenarios
 

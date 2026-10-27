@@ -74,6 +74,31 @@ see declared, but cross-scope cases can slip through).
 
 ---
 
+## DG-DOS-001 — Loop over a growable array's length (MEDIUM, CWE-834)
+
+**Fires when** a `for` loop is bounded by `arr.length` (or `m[k].length`) and
+`arr` is also appended to with `.push(...)` somewhere in the file — i.e. the
+array can grow without bound.
+
+**Why it matters.** Once the array is large enough, iterating it costs more than
+the block gas limit and every call on that path reverts **permanently**. If that
+path is how a user exits a position or claims funds, the funds are stuck — a
+denial-of-service (the idOS node-staking `withdrawUnstaked` / `withdrawableReward`
+class). Gas-griefing is out of scope in many programs, but *permanent* fund
+lock-up from unbounded growth often is not — confirm which this is.
+
+**Confirm / dismiss.** Is the array attacker-growable or only self-growable? Is
+the stuck state recoverable by anyone? Paginate (iterate to a caller-supplied
+count, persisting progress), cap the array size, or redesign so one account's
+growth cannot brick funds.
+
+**Known false positives.** A loop over a `.length` the heuristic links to a
+`.push` that is actually access-controlled or hard-bounded; a `.length` used only
+to clamp a paginated loop (the rule keys on `.length` *in the loop header*, so a
+loop running to a separate `end` variable is not flagged).
+
+---
+
 ## Adding a rule
 
 See [`../CONTRIBUTING.md`](../CONTRIBUTING.md). A rule PR must include its

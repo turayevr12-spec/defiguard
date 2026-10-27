@@ -34,6 +34,11 @@ def render_markdown(result: ScanResult) -> str:
         "> ⚠️ Findings are **heuristic review hints, not confirmed vulnerabilities.** "
         "Each must be confirmed by a human and, where possible, a test."
     )
+    lines.append(
+        "> Use only on code you own or are authorized to analyze; for learning / "
+        "testing purposes. Follow any bug-bounty program's scope and disclosure "
+        "rules. No warranty — all responsibility rests with the person running it."
+    )
     lines.append("")
 
     if not result.findings:

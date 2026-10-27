@@ -30,3 +30,12 @@ DeFiGuard surfaces patterns that could be abused. When you act on a finding:
 
 A flag is a hypothesis. Confirm it with a test and human review before you report
 anything.
+
+## Responsibility
+
+DeFiGuard is provided for **educational use and for testing your own projects**,
+"as is" and **without warranty** (see [LICENSE](LICENSE)). It must only be used
+where you are **authorized**. The authors and contributors accept **no liability**
+for any use, misuse, damage, or legal consequence. **All responsibility for how
+the tool is used, and for acting on its output, rests entirely with the person
+running it.**

@@ -75,6 +75,9 @@ def build_parser() -> argparse.ArgumentParser:
         prog="defiguard",
         description="Heuristic Solidity/DeFi security review helper. "
                     "Flags suspicious patterns to review -- not a vulnerability oracle.",
+        epilog="Use only on code you own or are authorized to analyze, for learning / "
+               "testing purposes. Follow any bug-bounty program's scope and disclosure "
+               "rules. No warranty; all responsibility rests with the person running it.",
     )
     sub = parser.add_subparsers(dest="command")
 

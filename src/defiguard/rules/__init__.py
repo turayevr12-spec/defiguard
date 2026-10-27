@@ -115,9 +115,11 @@ def load_rules() -> list[Rule]:
     from .access_control import ThirdPartyFundSourceRule
     from .delegatecall import DelegatecallStorageRule
     from .external_calls import ExternalCallRule
+    from .unbounded_loop import UnboundedLoopRule
 
     return [
         ThirdPartyFundSourceRule(),
         DelegatecallStorageRule(),
         ExternalCallRule(),
+        UnboundedLoopRule(),
     ]
