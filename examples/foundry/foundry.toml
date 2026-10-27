@@ -1,0 +1,12 @@
+[profile.default]
+src = "src"
+test = "test"
+out = "out"
+libs = ["lib"]
+solc = "0.8.20"
+optimizer = true
+optimizer_runs = 200
+
+# These examples are intentionally self-contained: the tests declare a minimal
+# Vm cheatcode interface inline and assert with `require`, so `forge test` runs
+# with no external dependencies (no forge-std install needed).

@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# DeFiGuard output
+report.json
+report.md
+*.defiguard.json
+
+# Foundry
+examples/foundry/out/
+examples/foundry/cache/
+examples/foundry/lib/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+
+# background tooling artifacts (not part of the project)
+.claude-flow/
+ruvector.db
+*.db
