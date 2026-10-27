@@ -39,7 +39,7 @@ Run `defiguard rules` to list them.
 ## Install
 
 ```bash
-git clone https://github.com/OWNER/defiguard.git
+git clone https://github.com/turayevr12-spec/defiguard.git
 cd defiguard
 python3 -m venv .venv && source .venv/bin/activate
 python -m pip install -e ".[dev]"

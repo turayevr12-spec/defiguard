@@ -24,8 +24,8 @@ dependencies = []
 dev = ["pytest>=7.4"]
 
 [project.urls]
-Homepage = "https://github.com/OWNER/defiguard"
-Issues = "https://github.com/OWNER/defiguard/issues"
+Homepage = "https://github.com/turayevr12-spec/defiguard"
+Issues = "https://github.com/turayevr12-spec/defiguard/issues"
 
 [project.scripts]
 defiguard = "defiguard.cli:main"
