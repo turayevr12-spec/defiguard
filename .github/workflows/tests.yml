@@ -23,7 +23,7 @@ jobs:
           python -m pip install -e ".[dev]"
       - name: Run tests
         run: python -m pytest -q
-      - name: Self-scan (sanity: CLI runs and flags the vulnerable fixtures)
+      - name: "Self-scan (sanity check: CLI runs and flags the vulnerable fixtures)"
         run: |
           defiguard rules
           defiguard scan tests/fixtures --format markdown
